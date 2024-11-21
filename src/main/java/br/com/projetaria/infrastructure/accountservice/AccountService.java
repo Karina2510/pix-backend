@@ -3,6 +3,7 @@ package br.com.projetaria.infrastructure.accountservice;
 import br.com.projetaria.domain.account.Account;
 import br.com.projetaria.domain.account.service.IAccountService;
 import br.com.projetaria.domain.user.User;
+import br.com.projetaria.infrastructure.accountservice.input.AccountInput;
 import br.com.projetaria.infrastructure.accountservice.output.AccountOutput;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class AccountService implements IAccountService {
         final AccountOutput accountFounded = this.userClient.getAccountBy(user.getId()).get(0);
 
         return new Account(
-                accountFounded.userId(),
+                accountFounded.id(),
                 user,
                 accountFounded.balance(),
                 accountFounded.createdAt()
@@ -31,6 +32,12 @@ public class AccountService implements IAccountService {
 
     @Override
     public void updateBalance(Account account) {
-        //this.updateBalance(account);
+        final AccountInput input = new AccountInput(
+                account.getId(),
+                account.getUser().getId(),
+                account.getBalance(),
+                account.getCreatedAt()
+        );
+        userClient.updateAccount(account.getId(), input);
     }
 }
